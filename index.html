@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Click Pick & Cook — From Circular to Table</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #3a7d44;
+      --green-light: #5aaa68;
+      --green-pale: #e8f5eb;
+      --cream: #fdfaf5;
+      --orange: #f4845f;
+      --orange-light: #fde8e0;
+      --text: #1a1a1a;
+      --text-mid: #555;
+      --text-light: #888;
+      --white: #ffffff;
+      --radius: 20px;
+      --shadow: 0 8px 40px rgba(0,0,0,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(253,250,245,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(58,125,68,0.10);
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--green);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--orange); }
+
+    nav a.nav-link {
+      color: var(--text-mid);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-left: 32px;
+      transition: color 0.2s;
+    }
+    nav a.nav-link:hover { color: var(--green); }
+
+    .nav-cta {
+      margin-left: 32px;
+      background: var(--green);
+      color: var(--white) !important;
+      padding: 10px 24px;
+      border-radius: 100px;
+      font-weight: 600 !important;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+    .nav-cta:hover { background: var(--green-light) !important; transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 120px 48px 80px;
+      gap: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(90,170,104,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-text { position: relative; z-index: 2; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-pale);
+      color: var(--green);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+      letter-spacing: 0.3px;
+    }
+
+    .hero-badge::before { content: '✦'; font-size: 0.7rem; }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 24px;
+      letter-spacing: -1px;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--green);
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: var(--white);
+      padding: 16px 36px;
+      border-radius: 100px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(58,125,68,0.3);
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      background: var(--green-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(58,125,68,0.35);
+    }
+
+    .btn-ghost {
+      color: var(--text-mid);
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--green); }
+    .btn-ghost::after { content: '→'; transition: transform 0.2s; }
+    .btn-ghost:hover::after { transform: translateX(4px); }
+
+    /* Hero image collage */
+    .hero-visual {
+      position: relative;
+      height: 560px;
+    }
+
+    .hero-img-main {
+      position: absolute;
+      top: 0; right: 0;
+      width: 75%;
+      height: 420px;
+      border-radius: var(--radius);
+      object-fit: cover;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-img-sub {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 55%;
+      height: 280px;
+      border-radius: var(--radius);
+      object-fit: cover;
+      box-shadow: var(--shadow);
+      border: 4px solid var(--cream);
+    }
+
+    .hero-pill {
+      position: absolute;
+      top: 50%; right: -20px;
+      transform: translateY(-50%);
+      background: var(--white);
+      border-radius: 16px;
+      padding: 14px 18px;
+      box-shadow: var(--shadow);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-pill-icon {
+      width: 36px; height: 36px;
+      background: var(--orange-light);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    /* ── SOCIAL PROOF ── */
+    .social-proof {
+      background: var(--green);
+      padding: 20px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .proof-item {
+      color: var(--white);
+      text-align: center;
+    }
+
+    .proof-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: block;
+    }
+
+    .proof-label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    .proof-divider {
+      width: 1px;
+      height: 40px;
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 100px 48px; }
+
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      margin-bottom: 20px;
+    }
+
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+      font-weight: 300;
+      max-width: 560px;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      background: var(--white);
+    }
+
+    .how-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .how-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    .how-header .section-sub { margin: 0 auto; }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 48px;
+      left: calc(16.66% + 24px);
+      right: calc(16.66% + 24px);
+      height: 2px;
+      background: repeating-linear-gradient(90deg, var(--green-pale) 0, var(--green-pale) 8px, transparent 8px, transparent 16px);
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-icon {
+      width: 96px; height: 96px;
+      background: var(--green-pale);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin: 0 auto 24px;
+      position: relative;
+      z-index: 1;
+      border: 3px solid var(--white);
+      box-shadow: 0 4px 20px rgba(58,125,68,0.15);
+    }
+
+    .step-num {
+      position: absolute;
+      top: -4px; right: -4px;
+      width: 28px; height: 28px;
+      background: var(--orange);
+      color: var(--white);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+
+    .step p {
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ── FEATURES ── */
+    .features { background: var(--cream); }
+
+    .features-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      margin-bottom: 100px;
+    }
+
+    .features-grid:last-child { margin-bottom: 0; }
+
+    .features-grid.reverse { direction: rtl; }
+    .features-grid.reverse > * { direction: ltr; }
+
+    .feature-img {
+      border-radius: var(--radius);
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      box-shadow: var(--shadow);
+    }
+
+    .feature-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--orange-light);
+      color: var(--orange);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .feature-text h2 { margin-bottom: 16px; }
+
+    .feature-list {
+      list-style: none;
+      margin-top: 28px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      line-height: 1.5;
+    }
+
+    .feature-list li::before {
+      content: '✓';
+      width: 22px; height: 22px;
+      min-width: 22px;
+      background: var(--green-pale);
+      color: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    /* ── FEATURE CARDS ── */
+    .feature-cards {
+      background: var(--white);
+      padding: 100px 48px;
+    }
+
+    .cards-inner { max-width: 1100px; margin: 0 auto; }
+
+    .cards-header { text-align: center; margin-bottom: 60px; }
+    .cards-header .section-sub { margin: 0 auto; }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .card {
+      background: var(--cream);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .card-emoji {
+      font-size: 2.4rem;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      color: var(--text-mid);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* ── ALEXA SECTION ── */
+    .alexa {
+      background: linear-gradient(135deg, #1a3a22 0%, #2d5c38 100%);
+      padding: 100px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alexa::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(90,170,104,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .alexa-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .alexa-text .section-label { color: var(--green-light); }
+    .alexa-text h2 { color: var(--white); }
+    .alexa-text .section-sub { color: rgba(255,255,255,0.7); }
+
+    .alexa-features {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .alexa-feat {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.95rem;
+    }
+
+    .alexa-feat-icon {
+      width: 40px; height: 40px;
+      min-width: 40px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .alexa-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .alexa-device {
+      width: 180px; height: 280px;
+      background: linear-gradient(160deg, #2a2a2a, #111);
+      border-radius: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative;
+    }
+
+    .alexa-ring {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #00caff, #0055ff, #00caff);
+      animation: spin 3s linear infinite;
+      box-shadow: 0 0 30px rgba(0,170,255,0.5);
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .alexa-bubble {
+      position: absolute;
+      background: var(--white);
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+    }
+
+    .alexa-bubble.top { top: -20px; right: -80px; }
+    .alexa-bubble.bottom { bottom: 20px; left: -100px; }
+    .alexa-bubble::before {
+      content: '🎙️ ';
+    }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials {
+      background: var(--green-pale);
+      padding: 100px 48px;
+    }
+
+    .testimonials-inner { max-width: 1100px; margin: 0 auto; }
+    .testimonials-header { text-align: center; margin-bottom: 60px; }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .testimonial {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+
+    .stars {
+      color: #f4b942;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .testimonial blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .author-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--green-pale);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+
+    .author-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .author-role {
+      font-size: 0.82rem;
+      color: var(--text-light);
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--cream);
+      padding: 120px 48px;
+      text-align: center;
+    }
+
+    .cta-inner { max-width: 700px; margin: 0 auto; }
+
+    .cta-inner h2 {
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      margin-bottom: 20px;
+    }
+
+    .cta-inner .section-sub { margin: 0 auto 40px; text-align: center; }
+
+    .cta-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--green);
+      border: 2px solid var(--green);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { background: var(--green); color: var(--white); }
+
+    .cta-note {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--text);
+      color: rgba(255,255,255,0.6);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .footer-logo span { color: var(--orange); }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--white); }
+
+    footer p { font-size: 0.85rem; }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
+      .hero-visual { height: 340px; }
+      .hero-img-main { width: 80%; height: 260px; }
+      .hero-img-sub { width: 50%; height: 200px; }
+      .hero-pill { display: none; }
+      .steps { grid-template-columns: 1fr; }
+      .steps::before { display: none; }
+      .features-grid { grid-template-columns: 1fr; gap: 40px; }
+      .features-grid.reverse { direction: ltr; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .alexa-inner { grid-template-columns: 1fr; }
+      .alexa-visual { display: none; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      section, .feature-cards, .alexa, .testimonials, .cta-section { padding: 64px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+      .social-proof { padding: 20px 24px; gap: 28px; }
+      .proof-divider { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">Click Pick <span>&</span> Cook</a>
+    <div>
+      <a href="#how" class="nav-link">How It Works</a>
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#bloggers" class="nav-link">Bloggers</a>
+      <a href="https://app.clickpickandcook.com" class="nav-link nav-cta">Sign Up Free</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text fade-up">
+      <div class="hero-badge">It doesn't matter where you shop</div>
+      <h1>From your weekly<br/><em>circular</em> to the dinner table.</h1>
+      <p class="hero-sub">Snap your grocery store circular, and we'll generate personalized AI recipes around what's on sale — plus connect you to your favorite food bloggers, your recipe box, your family calendar, and even Alexa.</p>
+      <div class="hero-actions">
+        <a href="https://app.clickpickandcook.com" class="btn-primary">Sign Up Free</a>
+        <a href="#how" class="btn-ghost">See how it works</a>
+      </div>
+    </div>
+    <div class="hero-visual fade-up" style="transition-delay: 0.2s">
+      <img class="hero-img-main" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80&fit=crop" alt="Family cooking together" />
+      <img class="hero-img-sub" src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80&fit=crop" alt="Woman shopping for groceries" />
+      <div class="hero-pill">
+        <div class="hero-pill-icon">🛒</div>
+        <div>
+          <div style="font-size:0.78rem;color:var(--text-light);font-weight:400">This week's circular</div>
+          <div>12 recipes generated</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <div class="social-proof">
+    <div class="proof-item">
+      <span class="proof-num">50K+</span>
+      <span class="proof-label">Home cooks</span>
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">
+      <span class="proof-num">1,200+</span>
+      <span class="proof-label">Food bloggers</span>
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">
+      <span class="proof-num">500K+</span>
+      <span class="proof-label">Recipes generated</span>
+    </div>
+    <div class="proof-divider"></div>
+    <div class="proof-item">
+      <span class="proof-num">Any store</span>
+      <span class="proof-label">Works everywhere</span>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="how-inner">
+      <div class="how-header fade-up">
+        <div class="section-label">Simple as 1-2-3</div>
+        <h2>Shop smarter.<br/>Cook better.</h2>
+        <p class="section-sub">It doesn't matter where you shop — any grocery store, any circular. We turn your weekly deals into a week of delicious meals.</p>
+      </div>
+      <div class="steps">
+        <div class="step fade-up">
+          <div class="step-icon">
+            📰
+            <div class="step-num">1</div>
+          </div>
+          <h3>Scan your circular</h3>
+          <p>Upload or photograph your grocery store's weekly circular — any store, any format. Our AI reads what's on sale.</p>
+        </div>
+        <div class="step fade-up" style="transition-delay:0.15s">
+          <div class="step-icon">
+            🤖
+            <div class="step-num">2</div>
+          </div>
+          <h3>Get AI-powered recipes</h3>
+          <p>We generate personalized recipes built around your sale items, blended with your recipe box and your favorite bloggers' content.</p>
+        </div>
+        <div class="step fade-up" style="transition-delay:0.3s">
+          <div class="step-icon">
+            🍽️
+            <div class="step-num">3</div>
+          </div>
+          <h3>Cook, share & connect</h3>
+          <p>Follow your meal plan, share recipes and cookbooks, track activities on your family calendar — and let Alexa read recipes aloud while you cook.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="features-inner">
+
+      <div class="features-grid fade-up">
+        <img class="feature-img" src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80&fit=crop" alt="Family cooking" />
+        <div class="feature-text">
+          <div class="feature-tag">🤖 AI Recipes</div>
+          <h2>Your circular.<br/>Your recipes.<br/><em>Your family.</em></h2>
+          <p class="section-sub">Every week, your grocery store tells you what's affordable. We tell you what to cook with it — personalized recipes that match your taste, your budget, and what's actually in your kitchen.</p>
+          <ul class="feature-list">
+            <li>Scan any store's weekly circular</li>
+            <li>AI generates recipes around your sale items</li>
+            <li>Blends with your personal recipe box</li>
+            <li>Filters for dietary preferences & family size</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="features-grid reverse fade-up" id="bloggers">
+        <img class="feature-img" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80&fit=crop" alt="Food blogger cooking" />
+        <div class="feature-text">
+          <div class="feature-tag">👩‍🍳 Food Bloggers</div>
+          <h2>Follow the cooks<br/>you <em>already love.</em></h2>
+          <p class="section-sub">Your favorite food bloggers are here. Follow them, get their latest recipes in your feed, and save their cookbooks directly to your collection — all in one place.</p>
+          <ul class="feature-list">
+            <li>Discover & follow 1,200+ food bloggers</li>
+            <li>Their recipes blend into your weekly meal plan</li>
+            <li>Save and organize blogger cookbooks</li>
+            <li>Share your own recipes with the community</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="features-grid fade-up">
+        <img class="feature-img" src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=800&q=80&fit=crop" alt="Family meal planning" />
+        <div class="feature-text">
+          <div class="feature-tag">📅 Family Calendar</div>
+          <h2>Your whole week,<br/><em>beautifully planned.</em></h2>
+          <p class="section-sub">Meal planning meets family scheduling. See your cooking activities, grocery runs, and family events in one calendar — and ask Alexa what's on the menu tonight.</p>
+          <ul class="feature-list">
+            <li>Integrated meal & family activity calendar</li>
+            <li>Alexa reads your recipes aloud in Cook Mode</li>
+            <li>Alexa tells you today's planned activities</li>
+            <li>Sync across the whole household</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FEATURE CARDS -->
+  <div class="feature-cards">
+    <div class="cards-inner">
+      <div class="cards-header fade-up">
+        <div class="section-label">Everything Included</div>
+        <h2>One app for the whole<br/>cooking journey.</h2>
+        <p class="section-sub">From shopping to the table, we've got every step covered.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card fade-up">
+          <span class="card-emoji">📖</span>
+          <h3>Recipe Box</h3>
+          <p>Save, organize, and build your personal recipe collection. Yours forever, accessible anywhere.</p>
+        </div>
+        <div class="card fade-up" style="transition-delay:0.1s">
+          <span class="card-emoji">📚</span>
+          <h3>Cookbooks</h3>
+          <p>Create beautiful digital cookbooks to share with family and friends, or keep them private.</p>
+        </div>
+        <div class="card fade-up" style="transition-delay:0.2s">
+          <span class="card-emoji">🛒</span>
+          <h3>Smart Shopping Lists</h3>
+          <p>Auto-generated shopping lists from your meal plan, organized by store section.</p>
+        </div>
+        <div class="card fade-up" style="transition-delay:0.1s">
+          <span class="card-emoji">👥</span>
+          <h3>Community Sharing</h3>
+          <p>Share recipes with friends, follow home cooks in your community, discover new favorites.</p>
+        </div>
+        <div class="card fade-up" style="transition-delay:0.2s">
+          <span class="card-emoji">🎵</span>
+          <h3>Cook Mode</h3>
+          <p>Hands-free step-by-step cooking with voice guidance via Alexa and optional background music.</p>
+        </div>
+        <div class="card fade-up" style="transition-delay:0.3s">
+          <span class="card-emoji">💰</span>
+          <h3>Budget Tracking</h3>
+          <p>See exactly how much you're saving by cooking with sale items. Your wallet will notice.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALEXA SECTION -->
+  <div class="alexa">
+    <div class="alexa-inner">
+      <div class="alexa-text fade-up">
+        <div class="section-label">Voice-Powered Cooking</div>
+        <h2 style="color:white">Cook hands-free<br/>with <em style="color:var(--green-light)">Alexa.</em></h2>
+        <p class="section-sub">Connect Click Pick & Cook to your Alexa device and cook without ever touching your phone. Ask Alexa to read the next step, check your schedule, or find out what's for dinner tonight.</p>
+        <div class="alexa-features">
+          <div class="alexa-feat">
+            <div class="alexa-feat-icon">📖</div>
+            "Alexa, read the next step in my recipe"
+          </div>
+          <div class="alexa-feat">
+            <div class="alexa-feat-icon">📅</div>
+            "Alexa, what cooking activities do I have today?"
+          </div>
+          <div class="alexa-feat">
+            <div class="alexa-feat-icon">🍽️</div>
+            "Alexa, what's for dinner tonight?"
+          </div>
+          <div class="alexa-feat">
+            <div class="alexa-feat-icon">⏱️</div>
+            "Alexa, set a timer for the roasted veggies"
+          </div>
+        </div>
+      </div>
+      <div class="alexa-visual">
+        <div class="alexa-device">
+          <div class="alexa-ring"></div>
+        </div>
+        <div class="alexa-bubble top">"Reading step 3..."</div>
+        <div class="alexa-bubble bottom">"Dinner at 6:30 tonight"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="testimonials">
+    <div class="testimonials-inner">
+      <div class="testimonials-header fade-up">
+        <div class="section-label">Loved by home cooks</div>
+        <h2>Real families.<br/>Real meals.</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial fade-up">
+          <div class="stars">★★★★★</div>
+          <blockquote>"I used to throw away half my circular without a second look. Now I actually plan my whole week around what's on sale — and my grocery bill dropped $80 a month."</blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar">S</div>
+            <div>
+              <div class="author-name">Sarah M.</div>
+              <div class="author-role">Mom of 3, Chicago</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial fade-up" style="transition-delay:0.15s">
+          <div class="stars">★★★★★</div>
+          <blockquote>"The Alexa integration is a game changer. My hands are covered in dough and I just say 'next step' — no more touching my phone with floury hands."</blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar">R</div>
+            <div>
+              <div class="author-name">Rachel K.</div>
+              <div class="author-role">Home baker, Austin</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial fade-up" style="transition-delay:0.3s">
+          <div class="stars">★★★★★</div>
+          <blockquote>"I've been following three food bloggers for years. Having all their recipes in one place — mixed with my own — and built into a weekly plan is everything I didn't know I needed."</blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar">L</div>
+            <div>
+              <div class="author-name">Linda T.</div>
+              <div class="author-role">Food enthusiast, Seattle</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner fade-up">
+      <div class="section-label">Get Started Today</div>
+      <h2>Your circular is waiting.<br/><em>Let's cook.</em></h2>
+      <p class="section-sub">Join thousands of home cooks who are eating better, spending less, and actually enjoying the process again.</p>
+      <div class="cta-actions">
+        <a href="https://app.clickpickandcook.com" class="btn-primary">Sign Up Free</a>
+        <a href="https://app.clickpickandcook.com/login" class="btn-secondary">I already have an account</a>
+      </div>
+      <p class="cta-note">Free forever for home cooks. No credit card required.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Click Pick <span>&</span> Cook</div>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">For Bloggers</a>
+      <a href="#">Contact</a>
+    </div>
+    <p>© 2026 Click Pick & Cook. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Fade-up on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Trigger hero immediately
+    document.querySelectorAll('.hero .fade-up').forEach(el => {
+      setTimeout(() => el.classList.add('visible'), 100);
+    });
+  </script>
+</body>
+</html>
